@@ -7,24 +7,27 @@
 #include <string>
 
    
-        //es fehlt: 1 Array statt 2; die Grenzen der Arrays sind geschummelt; die Daten in einen neue Datei füttern; plotten
+         
 using namespace std;
 
 void reading(double*, const int, const string);
-void filter(double*,const int, double*);
-void print(double*,const int,double*);
+void filter(double*,const int);
+void print(double*,const int);
+void print_f(const double*, const int,const string);
 
 
 
 int main(void){
     const int N = 236; // Ich weiss noch nicht wie ich die Anz. der Daten zählen kann
     const string filename = "noisy.txt"; //aus dieser Datei ablesen
-    double* f = new double[N];
-    double* g = new double[N];
-    reading(f,N,filename);
-    filter(f,N,g);
-    print(f,N,g);
+    const string file_out = "filtered1.txt";
     
+    double* f = new double[N];
+    reading(f,N,filename);
+    filter(f,N);
+    print(f,N);
+
+    print_f(f,N,file_out);
     delete[] f;
 }
 
@@ -37,18 +40,32 @@ void reading(double* f,const int N, const string fname){
     in.close(); // den Spass wieder schließen
 }
 
-void filter(double* f,const int N,double* g){
+void filter(double* f,const int N){
+   int a=f[0];
+   int b=f[N];
+   int c=f[N-1];
+   int d=f[1];
+   int temp = f[0];
+   
    for(int i=1; i<N-1; i++){
-        g[i]=(f[i-1]+f[i]+f[i+1])/3.0;//jaaa, hätte ich die Aufgabestellung vollständig gelesen, hätte ich nur 1 Array erschaffen...
+        f[i]=(temp+f[i]+f[i+1])/3.0;
+        temp=f[i];
     }
-    g[0]=f[0];
-    g[N]=f[N];
+    
+    f[0]=(a+b+d)/3;
+    f[N]=(a+b+c)/3;
 }
 
-void print(double* f, const int N, double* g){
+void print(double* f, const int N){
     for(int i=0; i<N; i++){
-        cout << f[i] << "\t" << g[i]<< endl;
+        cout << f[i] << endl;
     }
 }
     
- 
+void print_f(const double* f, const int N,const string file_out){
+    ofstream out(file_out.c_str());
+    for(int i=0;i<N;i++){
+        out << f[i] << endl;
+    }
+    out.close();
+}
